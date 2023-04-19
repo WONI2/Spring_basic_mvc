@@ -30,7 +30,7 @@ public class LoginController {
         return "chap03/s-form";
     }
 @PostMapping("/s-login-check")
-    public String loginCheck( String id,
+    public String loginCheck( String id, //받아오는 ID, PWD는 각 태그의 NAME으로 받아오는 것
                           String pwd ,Model model){
     String result = null;
     if(id.equals("grape111") && pwd.equals("ggg9999"))   {
@@ -40,7 +40,9 @@ public class LoginController {
     }else if (!id.equals("grape111")) {
         result = "아이디가 존재하지 않습니다";
     }
-    model.addAttribute("result", result);
+    model.addAttribute("result", result); //마지막에 model에 어떻게 담아서 나가야 하는지 잘 몰랐음!
+//                                                          MODEL은 담아서 나가는 역할이니까 result를 받아서 나가야 하고
+//
     return "chap03/s-result";
 }
 
