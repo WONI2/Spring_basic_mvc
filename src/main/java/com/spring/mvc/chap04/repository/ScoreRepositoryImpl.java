@@ -1,5 +1,6 @@
 package com.spring.mvc.chap04.repository;
 
+import com.spring.mvc.chap04.DTO.ScoreRequestDTO;
 import com.spring.mvc.chap04.entity.Score;
 import org.springframework.stereotype.Repository;
 
@@ -7,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.spring.mvc.chap04.entity.Grade.*;
+import static java.util.Comparator.*;
 
 //@Component //스프링의 빈 등록: 객체의 생성의 제어권을 스프링에게 위임.
 @Repository // component와 같은 역할. 저장소 빈으로 역할을 함.
@@ -20,9 +22,13 @@ public class ScoreRepositoryImpl implements ScoreRepository{
 
     static {
         scoreMap = new HashMap<>();
-        Score stu1 = new Score("포비",100,50,70,++sequence, 0, 0, A);
-        Score stu2 = new Score("루피",100,99,5,++sequence, 0, 0, A);
-        Score stu3 = new Score("에디",70,60,100,++sequence, 0, 0, A);
+        Score stu1 = new Score(new ScoreRequestDTO("포비",100,50,70) );
+        Score stu2 = new Score(new ScoreRequestDTO("루피",100,99,5));
+        Score stu3 = new Score(new ScoreRequestDTO("에디",70,60,100));
+
+       stu1.setStuNum(++sequence);
+       stu2.setStuNum(++sequence);
+       stu3.setStuNum(++sequence);
 
         scoreMap.put(stu1.getStuNum(), stu1);
         scoreMap.put(stu2.getStuNum(), stu2);
@@ -33,8 +39,30 @@ public class ScoreRepositoryImpl implements ScoreRepository{
     @Override
     public List<Score> findAll() {
         return new ArrayList<>(scoreMap.values()).stream()
-                .sorted(Comparator.comparing(Score::getStuNum)).collect(Collectors.toList());
+                .sorted(comparing(Score::getStuNum))
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Score> findAll(String sort) {
+
+        Comparator<Score> comparing = comparing(Score::getStuNum);
+        switch (sort) {
+            case "stuNum":
+                comparing = comparing(Score::getStuNum);
+                break;
+            case "name" :
+                comparing = comparing(Score::getName);
+                break;
+            case "avg" :
+                comparing = comparing(Score::getAverage);
+                break;
+        }
+        return new ArrayList<>(scoreMap.values()).stream()
+                .sorted(comparing)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public boolean save(Score score) {

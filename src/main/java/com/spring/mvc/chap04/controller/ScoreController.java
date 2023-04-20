@@ -54,10 +54,11 @@ public class ScoreController {
 
     //1번 요청 : 학생 성적정보 등록화면을 보여주고 성적정보 목록조회 처리
 @GetMapping("/list")
-public String list(Model model) {
+public String list(Model model, @RequestParam(defaultValue = "stuNum") String sort) {
     System.out.println("/score/list : GET");
+    System.out.println("정렬요구사항 " + sort);
 
-    List<Score> scoreList = repository.findAll();
+    List<Score> scoreList = repository.findAll(sort);
     model.addAttribute("sList",scoreList);
 
     return "chap04/scoreList";
@@ -94,11 +95,31 @@ public String register(ScoreRequestDTO dto) {
 
     //4번 요청
 @GetMapping("/detail")
-    public String detail() {
+public String detail(@RequestParam  int stuNum, Model model){
     System.out.println("/score/detail : GET");
-    return "";
+    Score score = repository.findByStuNum(stuNum);
+    model.addAttribute("score", score);
+
+    return "chap04/score-detail";
+}
+@GetMapping("/modifypage")
+public String modifyPage(int stuNum, Model model){
+    Score score = repository.findByStuNum(stuNum);
+    model.addAttribute("score", score);
+
+    return "chap04/score-modify";
 }
 
+@PostMapping("/modify")
+public String modify(int stuNum, ScoreRequestDTO dto, Model model) {
+    Score s = repository.findByStuNum(stuNum);
+    s.setDto(dto);
+    model.addAttribute("score", s);
+
+
+
+    return "redirect:/score/detail?stuNum="+stuNum;
+}
 
 
 

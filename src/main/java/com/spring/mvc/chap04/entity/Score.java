@@ -37,7 +37,16 @@ public class Score {
 
     private void calcTotalAndAvg() {
         this.total = kor+eng+math;
-        this.average = total /3.0;
+        this.average =Math.ceil(total/3.0* 100) / 100.0;
+
+    }
+    public void setDto(ScoreRequestDTO dto) {
+        this.name =dto.getName();
+        this.kor = dto.getKor();
+        this.eng = dto.getEng();
+        this.math = dto.getMath();
+        calcTotalAndAvg();
+        calcGrade();
     }
 
 
