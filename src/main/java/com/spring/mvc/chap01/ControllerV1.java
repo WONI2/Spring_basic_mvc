@@ -1,14 +1,13 @@
 package com.spring.mvc.chap01;
 
 
-//어떤 요청들을 처리할지 공통 url을 설계
-
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 
+
+//어떤 요청들을 처리할지 공통 url을 설계
 @RequestMapping("/spring/*")
 //이 클래스의 객체를 스프링이 관리하도록 빈을 등록
 @Controller //@Component를 포함한 같은 개념, controllerMapping 기능을 알기 쉽게 추가 되어 있음.
