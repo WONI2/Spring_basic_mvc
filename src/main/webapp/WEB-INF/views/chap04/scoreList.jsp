@@ -113,12 +113,11 @@
 
                 </li>
 
-                <c:forEach var="s" items="${sList}">
+                <c:forEach var="score" items="${sList}">
                     <li>
-                        # 학번: ${s.stuNum}, 이름: <a href="/score/detail?stuNum=${s.stuNum}">${s.name}</a>, 
-                        국어:${s.kor}점,영어: ${s.eng}점, 수학: ${s.math}점, 
-                        총점: ${s.total}점, 평균:${s.average}점, 학점: ${s.grade}
-                        <a class="del-btn" href="/score/remove?stuNum=${s.stuNum}">삭제</a>
+                        # 학번: ${score.stuNum}, 이름: <a href="/score/detail?stuNum=${score.stuNum}">${score.maskingName}</a>, 
+                         평균:${score.average}점, 학점: ${score.grade}
+                        <a class="del-btn" href="/score/remove?stuNum=${score.stuNum}">삭제</a>
                     </li>
                 </c:forEach>
             </ul>
