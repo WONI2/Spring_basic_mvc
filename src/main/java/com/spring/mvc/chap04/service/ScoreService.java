@@ -54,6 +54,7 @@ public class ScoreService {
 //    상세조회, 수정화면 조회 중간처리
 
     public Score retrieve(int stuNum) {
+
        return scoreRepository.findByStuNum(stuNum);
     }
 
