@@ -11,7 +11,7 @@ import static com.spring.mvc.chap04.entity.Grade.*;
 import static java.util.Comparator.*;
 
 //@Component //스프링의 빈 등록: 객체의 생성의 제어권을 스프링에게 위임.
-@Repository // component와 같은 역할. 저장소 빈으로 역할을 함.
+@Repository("memory") // component와 같은 역할. 저장소 빈으로 역할을 함.
 public class ScoreRepositoryImpl implements ScoreRepository{
 
     //key: 학번 , value: 성적정보 // 성적map은 한개, 변경되면 안되고 외부에서 바꿀 수 없게 제한 걸어둘 것

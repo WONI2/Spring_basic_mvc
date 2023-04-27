@@ -70,7 +70,7 @@ public String list(Model model, @RequestParam(defaultValue = "stuNum") String so
 //    service 만든 후 방법
     List<ScoreListResponseDTO> dto = scoreService.getList(sort); //dto로 받지 않고 바로 model에 넣어 줘도 됨
     model.addAttribute("sList",dto);
-
+    System.out.println("dto = " + dto);
     return "chap04/scoreList";
 }
 
@@ -107,29 +107,31 @@ public String register(ScoreRequestDTO dto) {
 @GetMapping("/detail")
 public String detail(@RequestParam  int stuNum, Model model){
     System.out.println("/score/detail : GET");
-    Score score = scoreService.retrieve(stuNum);
-
-    model.addAttribute("score", score);
-
+    retrieve(stuNum, model);
     return "chap04/score-detail";
 }
 @GetMapping("/modify")
 //get과 post가 다르면 같은 주소값을 써도 다르게 받을 수 있음
-public String modifyPage(int stuNum, Model model){
-    Score score = scoreService.retrieve(stuNum);
-    model.addAttribute("score", score);
+public String modify(int stuNum, Model model){
+
+    retrieve(stuNum, model);
 
     return "chap04/score-modify";
 }
-
+//수정완료처리
 @PostMapping("/modify")
-public String modify(int stuNum, ScoreRequestDTO dto, Model model) {
+public String modify(int stuNum, ScoreRequestDTO dto) {
     Score s = scoreService.retrieve(stuNum);
     s.setDto(dto);
-    model.addAttribute("score", s);
+//    model.addAttribute("score", s);
 
     return "redirect:/score/detail?stuNum="+stuNum;
 }
+
+    private void retrieve(int stuNum, Model model) {
+        Score score = scoreService.retrieve(stuNum);
+        model.addAttribute("score", score);
+    }
 
 
 

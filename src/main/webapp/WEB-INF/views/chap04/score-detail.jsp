@@ -21,7 +21,7 @@
        <li id="avg"></li>
        <li>#학점: ${score.grade}</li>
    </ul>
-   <button><a href="/score/list">목록</a></button> <button><a href="/score/modifypage?stuNum=${score.stuNum}">수정</a></button>
+   <button><a href="/score/list">목록</a></button> <button><a href="/score/modify?stuNum=${score.stuNum}">수정</a></button>
 
 
     <script>
