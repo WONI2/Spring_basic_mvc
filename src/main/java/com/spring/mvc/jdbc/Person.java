@@ -10,6 +10,7 @@ import java.sql.SQLException;
 @Setter @Getter
 @ToString @EqualsAndHashCode
 @NoArgsConstructor @AllArgsConstructor
+@Builder
 public class Person {
     private long id;
     private String personName;

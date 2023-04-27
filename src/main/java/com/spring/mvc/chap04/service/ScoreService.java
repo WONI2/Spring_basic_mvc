@@ -4,6 +4,7 @@ package com.spring.mvc.chap04.service;
 import com.spring.mvc.chap04.DTO.ScoreListResponseDTO;
 import com.spring.mvc.chap04.DTO.ScoreRequestDTO;
 import com.spring.mvc.chap04.entity.Score;
+import com.spring.mvc.chap04.repository.ScoreMapper;
 import com.spring.mvc.chap04.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,10 @@ import java.util.stream.Collectors;
 @Service //빈등록- 등록해야 사용 할 수 있음
 public class ScoreService {
 
-    private final ScoreRepository scoreRepository;
+    private final ScoreMapper scoreRepository;
 
-    public ScoreService(@Qualifier("spring") ScoreRepository scoreRepository) {
+    public ScoreService(ScoreMapper scoreRepository) {
+
         this.scoreRepository = scoreRepository;
     }
 

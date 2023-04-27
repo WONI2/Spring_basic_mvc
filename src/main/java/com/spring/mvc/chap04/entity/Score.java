@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Setter @Getter @ToString @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode
+@Builder
 public class Score {
 
     private String name;
