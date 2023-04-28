@@ -12,15 +12,22 @@
         DELETE FROM score
         WHERE STU_NUM = #{stuNum}
     </delete>
-    <resultMap id="score" type="com.spring.mvc.chap04.entity.Score">
-        <result property="stuName" column="stu_name"/>
-        <result property="stuNum" column="stu_num"/>
-    </resultMap>
-    <select id="findByStuNum" resultMap="score">
+
+    <!--    mybatis 문서에 자동 설정을 해주는 setting을 해둬서 쓰지 않아도 되지만, 컬럼명과 필드명을 맞춰줘야 함-->
+    <!--    <resultMap id="score" type="com.spring.mvc.chap04.entity.Score">-->
+    <!--        <result property="stuNum" column="stu_num"/>-->
+    <!--    </resultMap>-->
+    <select id="findByStuNum" resultType="score">
         SELECT * FROM score WHERE STU_NUM = #{stuNum}
     </select>
-    <select id="findAll" resultMap="score">
+    <select id="findAll" resultType="score">
         SELECT * FROM score
+        <if test="sort == 'name'">
+            ORDER BY name
+        </if>
+        <if test="sort == 'avg'">
+            ORDER BY average DESC
+        </if>
     </select>
 
 

@@ -25,7 +25,7 @@ public class ScoreSpringRepository implements ScoreRepository{
     public List<Score> findAll(String sort) {
         String sql = "SELECT * FROM score";
         switch(sort) {
-            case "num" :
+            case "stuNum" :
                 sql += " ORDER BY STU_NUM";
                 break;
             case "name" :
