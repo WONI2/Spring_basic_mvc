@@ -6,7 +6,19 @@
     <select id="findAll" resultType="board">
         SELECT board_no, title, content, view_count, reg_date_time
         FROM tbl_board
+        <if test="type == 'title'">
+       WHERE title LIKE CONCAT('%', #{keyword} , '%')
+        </if>
+        <if test="type == 'content'">
+       WHERE content LIKE CONCAT('%', #{keyword} , '%')
+        </if>
+        <if test="type == 'tc'">
+            WHERE title LIKE CONCAT('%', #{keyword}, '%')
+            OR content LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+
         ORDER BY BOARD_NO DESC
+        LIMIT #{pageStart}, #{amount}
     </select>
     <select id="findOne" resultType="board">
         SELECT board_no, title, content, view_count, reg_date_time
@@ -30,6 +42,21 @@
 
     </update>
 
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_board
+        <if test="type == 'title'">
+            WHERE title LIKE CONCAT('%', #{keyword} , '%')
+        </if>
+        <if test="type == 'content'">
+            WHERE content LIKE CONCAT('%', #{keyword} , '%')
+        </if>
+        <if test="type == 'tc'">
+            WHERE title LIKE CONCAT('%', #{keyword}, '%')
+            OR content LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+
+    </select>
 
 
 
