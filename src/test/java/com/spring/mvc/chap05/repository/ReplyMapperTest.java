@@ -45,7 +45,20 @@ class ReplyMapperTest {
 //
 //    }
 
+  /*  @Test
+    void bulkReplyInsert() {
+        for (int i = 0; i < 300; i++) {
+            Reply reply = Reply.builder()
+                    .replyText("페이지 댓글"+i)
+                    .replyWriter("콩순이")
+                    .boardNo(1L)
+                    .build();
+            replyMapper.save(reply);
+        }
 
+
+    }
+*/
     @Test
     @DisplayName("댓글을 3번 게시물에 등록하면 3번 게시물의 총 댓글 수는 5개 여야 한다")
     @Transactional
