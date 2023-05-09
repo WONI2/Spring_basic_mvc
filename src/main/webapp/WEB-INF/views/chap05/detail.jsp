@@ -411,8 +411,121 @@ $regBtn.onclick = e => {
 
     }
 
+// 댓글 삭제+수정모달띄우기 이벤트 처리 함수
+function replyRemoveClickEvent() {
+    const $replyData = document.getElementById('replyData');
+    $replyData.onclick = e => {
+        const rno = e.target.closest('#replyContent').dataset.replyid;
+        e.preventDefault();
+        if(e.target.matches('#replyDelBtn')){
+        // console.log('삭제버튼 클릭');
+            if(!confirm('정말 삭제합니까? ')) return; 
+        // 삭제할 댓글의 pk값 읽기
+        // parentElement 로 올라가는 내용을 closest 로 변경 
+
+            // 서버에 삭제 비동기 요청
+        fetch(URL+'/'+ rno, {
+            method : 'DELETE'
+
+        }).then(res => {
+            if(res.status === 200 ){
+                alert('댓글이 정상 삭제됨');
+                return res.json();
+            }else {
+                alert('댓글 삭제 실패');
+            }
+        }).then(responseResult => {
+            // 삭제가 끝나고 삭제 후의 데이터가 전달
+            renderReplyList(responseResult);
+        });
+    
+    } else if(e.target.matches('#replyModBtn')) {
+        // console.log('수정 화면 진입');
+
+        // 클릭한 수정버튼 근처의 텍스트 읽기
+        const replyText = e.target.parentElement.previousElementSibling.textContent;
+        //console.log(replyTxt);
+        //모달 바디의 textarea에 읽은 텍스트 삽입
+        document.getElementById('modReplyText').value = replyText;
+
+        // 다음 수정 완료 처리위해 미리 수정창을 띄울 때 댓글번호를 모달에 붙여놓자
+        const $modal = document.querySelector('.modal');
+        $modal.dataset.rno = rno;
+    } 
+    };
+}
+// 서버에 수정 비동기 요청 처리 함수
+function replyModifyClickEvent() {
+
+const $modBtn = document.getElementById('replyModBtn');
+
+$modBtn.onclick = e => {
+
+    const payload = {
+        replyNo: +document.querySelector('.modal').dataset.rno,
+        bno: +bno,
+        text: document.getElementById('modReplyText').value
+    };
+
+    // console.log(payload);
+
+    fetch(URL, {
+        method: 'PUT',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).then(res => {
+        if (res.status === 200) {
+            alert('댓글이 정상 수정되었습니다!');
+            document.getElementById('modal-close').click();
+            return res.json();
+        } else {
+            alert('댓글 수정에 실패했습니다.');
+        }
+    }).then(result => {
+        renderReplyList(result);
+    });
+};
+}
 
 
+
+
+
+
+
+// 서버에 수정 비동기 요청 처리 함수
+    // function replyModifyClickEvent() {
+
+    //     const $modBtn = document.getElementById('replyModBtn');
+
+    //     $modBtn.onclick = e=> {
+    //         fetch(URL, {
+    //             method : 'PUT',
+    //             headers : {
+    //                 'content-type' : 'application/json'
+    //             },
+    //             body : JSON.stringify({
+    //                 rno : +document.querySelector('.modal').dataset.rno,
+    //                 bno : +bno,
+    //                 text: document.getElementById('modReplyText').value
+    //             }).then(res => { 
+    //                 if(res.status === 200) {
+    //                     alert('댓글 수정 완료');
+    //                     // 모달창 닫기
+    //                     document.getElementById('modal-close').click();
+    //                     return res.json();
+    //                 }else {
+    //                     alert('댓글수정 실패');
+    //                 }
+    //             }).then(result => {
+    //                  renderReplyList(result);
+    //             }
+    //            )
+    //         })
+    //     }
+    // }
 
 
         // 메인 실행부
@@ -423,6 +536,10 @@ $regBtn.onclick = e => {
             makePageButtonClickEvent();
             // 댓글 등록 이벤트 등록
             makeReplyRegisterClickEvent();
+            // 삭제 이벤트 등록
+            replyRemoveClickEvent();
+            // 수정 이벤트 등록
+            replyModifyClickEvent();
 
         })();
 
