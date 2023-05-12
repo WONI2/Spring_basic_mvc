@@ -6,6 +6,7 @@ import com.spring.mvc.chap05.dto.LoginUserResponseDTO;
 import com.spring.mvc.chap05.dto.SignUpRequestDTO;
 import com.spring.mvc.chap05.entity.Member;
 import com.spring.mvc.chap05.repository.MemberMapper;
+import com.spring.mvc.util.LoginUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +83,7 @@ public class MemberService {
                 .build();
 
 //       정보를 세션에 저장
-        session.setAttribute("login",dto);
+        session.setAttribute(LoginUtil.LOGIN_KEY,dto);
 //세션의 수명 설정
         session.setMaxInactiveInterval(60*60); // 1시간 설정 함. 설정 안하면 기본값 30분
 

@@ -274,7 +274,7 @@
         // 이메일 검사 정규표현식
         const emailPattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
-        // 아이디 입력값 검증
+        // 이메일 입력값 검증
         const $emailInput = document.getElementById('user_email');
 
         $emailInput.onkeyup = e => {

@@ -8,9 +8,11 @@ import com.spring.mvc.chap05.dto.page.Search;
 import com.spring.mvc.chap05.entity.Board;
 import com.spring.mvc.chap05.repository.BoardMapper;
 import com.spring.mvc.chap05.repository.BoardRepository;
+import com.spring.mvc.util.LoginUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,11 @@ public class BoardService {
     }
 
     // 글 등록 중간처리
-    public boolean register(BoardWriteRequestDTO dto) {
+    public boolean register(BoardWriteRequestDTO dto, HttpSession session) {
+//        컨트롤러에서 세션을 받아오기.
+        Board board = new Board(dto);
+        board.setAccount(LoginUtil.getCurrentLoginMemberAccount(session)); //account를 받아와야 함. dto엔 없으니 따로 받아올것
+
         return boardRepository.save(new Board(dto));
     }
 
