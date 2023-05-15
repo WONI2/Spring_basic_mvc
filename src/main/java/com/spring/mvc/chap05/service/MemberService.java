@@ -1,6 +1,7 @@
 package com.spring.mvc.chap05.service;
 
 
+import com.spring.mvc.chap05.dto.AutoLoginDTO;
 import com.spring.mvc.chap05.dto.LoginRequestDTO;
 import com.spring.mvc.chap05.dto.LoginUserResponseDTO;
 import com.spring.mvc.chap05.dto.SignUpRequestDTO;
@@ -12,8 +13,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -47,7 +53,9 @@ public class MemberService {
     }
 
 //로그인 검증
-    public LoginResult authenticate(LoginRequestDTO dto)  {
+    public LoginResult authenticate(LoginRequestDTO dto,
+                                    HttpSession session,
+                                    HttpServletResponse response)  {
         Member foundMember = memberMapper.findMember(dto.getAccount());
 //       회원가입 여부 확인
         if(foundMember == null) {
@@ -59,6 +67,29 @@ public class MemberService {
             log.info("비밀번호 불일치");
             return LoginResult.NO_PW;
         }
+
+//        자동로그인 체크 여부 확인
+        if(dto.isAutoLogin()) {
+//            1. 쿠키생성 - 쿠키 값에 세션 아이디를 저장
+            Cookie autoLoginCookie = new Cookie(LoginUtil.AUTO_LOGIN_COOKIE,session.getId() );
+//            2. 쿠키 셋팅 - 수명, 사용경로
+            int limitTime = 60*60*24*90; //90일
+            autoLoginCookie.setMaxAge(limitTime);
+            autoLoginCookie.setPath("/");//전체 경로에서 들고 다니게 함. 어디서든지 자동로그인으로 들어갈 수 있게
+
+//            3. 쿠키를 클라이언트에 응답전송
+            response.addCookie(autoLoginCookie);
+//            4. DB에도 쿠키에 저장된 값과 수명을 저장
+            memberMapper.saveAutoLogin(AutoLoginDTO.builder()
+                            .sessionId(session.getId())
+                            .account(dto.getAccount())
+                            .limitTime(LocalDateTime.now().plusDays(90))
+                    .build());
+//            세션아이디가 바뀌어도 자동로그인할 때의 쿠키값은 유지 될 것
+
+        }
+
+
         log.info("{}님 로그인 성공",foundMember.getName());
         return LoginResult.SUCCESS;
     }
@@ -80,6 +111,7 @@ public class MemberService {
                 .account(member.getAccount())
                 .nickName(member.getName())
                 .email(member.getEmail())
+                .auth(member.getAuth().toString()) // auth는 enum 이니까
                 .build();
 
 //       정보를 세션에 저장
@@ -94,4 +126,24 @@ public class MemberService {
     }
 
 
+    public void autoLoginClear(HttpServletRequest request, HttpServletResponse response) {
+//    1. 자동 로그인 해지 - 자동 로그인 쿠키 가져오기
+        Cookie cookie = WebUtils.getCookie(request, LoginUtil.AUTO_LOGIN_COOKIE);
+
+//        2. 쿠키를 삭제한다
+//        쿠키의 수명을 0초로 만들어서 다시 클라이언트에게 응답
+
+
+        if (cookie != null) {
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
+//    3. 데이터 베이스에서도 자동로그인 해제
+        memberMapper.saveAutoLogin(AutoLoginDTO.builder()
+                        .sessionId("none")
+                        .limitTime(LocalDateTime.now())
+                        .account(LoginUtil.getCurrentLoginMemberAccount(request.getSession()))
+                        .build());
+    }
 }

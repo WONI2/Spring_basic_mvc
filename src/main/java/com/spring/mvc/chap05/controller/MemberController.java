@@ -4,6 +4,7 @@ import com.spring.mvc.chap05.dto.LoginRequestDTO;
 import com.spring.mvc.chap05.dto.SignUpRequestDTO;
 import com.spring.mvc.chap05.service.LoginResult;
 import com.spring.mvc.chap05.service.MemberService;
+import com.spring.mvc.util.LoginUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +30,14 @@ public class MemberController {
 
     //회원가입 요청
 
-//    회원가입 양식 요청
+    //    회원가입 양식 요청
     @GetMapping("/sign-up")
     public String signUp() {
         log.info("/members/sign-up GET -forwarding to jsp");
         return "members/sign-up";
     }
 
-//    회원가입 처리 요청
+    //    회원가입 처리 요청
     @PostMapping("/sign-up")
     public String signUp(SignUpRequestDTO dto) {
         log.info("/members/sign-up POST - {}", dto);
@@ -44,19 +45,21 @@ public class MemberController {
         return "redirect:/board/list";
 
     }
-//아이디, 이메일 중복 검사
+
+    //아이디, 이메일 중복 검사
 // 비동기 요청 처리
     @GetMapping("/check")
     @ResponseBody //check만 비동기 처리할 때
     public ResponseEntity<?> check(String type, String keyword) {
-        log.info("/members/check?type={}&keyword={} ASYNC GET",type,keyword);
+        log.info("/members/check?type={}&keyword={} ASYNC GET", type, keyword);
 
         boolean flag = memberService.checkSignUpValue(type, keyword);
 
         return ResponseEntity.ok().body(flag);
 
     }
-//    로그인 화면 요청
+
+    //    로그인 화면 요청
     @GetMapping("/sign-in")
     public String signIn(HttpServletRequest request) {
         log.info("/members/sign-in GET -forwarding to jsp");
@@ -64,31 +67,29 @@ public class MemberController {
 //        요청정보 헤더 안에는 referer라는 키가 있는데, 이 값은 이페이지로
 //        들어올 때 어디에서 왔는지에 대한 URI 정보가 기록되어 있음.
         String referer = request.getHeader("Referer");
-        log.info("referer : {}", referer );
+        log.info("referer : {}", referer);
 
         return "members/sign-in";
     }
 
-//    로그인 검증 요청
+    //    로그인 검증 요청
     @PostMapping("/sign-in")
     public String signIn(LoginRequestDTO dto
-                            , RedirectAttributes ra
-                            , HttpServletResponse response
-                            ,HttpServletRequest request) {
+            , RedirectAttributes ra
+            , HttpServletResponse response
+            , HttpServletRequest request) {
         log.info("/members/sign-in POST - {}", dto);
-        LoginResult result = memberService.authenticate(dto);
+        LoginResult result = memberService.authenticate(dto, request.getSession(), response);
 
         //로그인 성공시
-        if(result == LoginResult.SUCCESS) {
+        if (result == LoginResult.SUCCESS) {
 //            세션방식
 //            서버에서 세션에 로그인 정보를 저장
-            memberService.maintainLoginState(request.getSession(),dto.getAccount());
+            memberService.maintainLoginState(request.getSession(), dto.getAccount());
 
 
             //session에는 많은 정보를 담을 수 있고, 가지고 있음
 //            클라이언트가 아니라 서버에 저장되는 것(쿠키는 클라이언트에 저장되지만! )
-
-
 
 
 ////        쿠키 만들기
@@ -109,19 +110,29 @@ public class MemberController {
         return "redirect:/members/sign-in";
 
     }
-//    로그아웃 요청 처리
+
+    //    로그아웃 요청 처리
     @GetMapping("/sign-out")
-    public String signOut(HttpSession session) {
-//    스프링에서느 HttpSession 을 받아올 수 있음
+    public String signOut(HttpServletRequest request,
+                          HttpServletResponse response) {
+//    스프링에서는 HttpSession 을 받아올 수 있음
+        HttpSession session = request.getSession();
+//로그인 중인지 확인
+        if (LoginUtil.isLogin(session)) {
+//            자동로그인 상태라면 해제한다
+            if (LoginUtil.isAutoLogin(request)) {
+                memberService.autoLoginClear(request, response);
+            }
+
 //    세션에서 로그인 정보 제거
         session.removeAttribute("login");
 
 //        세션을 아예 초기화(세션 만료 시간)
         session.invalidate(); //다음 로그인을 위해 새로운 세션을 만들어 냄
+            return "redirect:/";
 
-
-        return "redirect:/";
     }
-
+        return "redirect:/members/sign-in";
+}
 
 }

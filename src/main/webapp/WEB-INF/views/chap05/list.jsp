@@ -68,11 +68,15 @@
                             
                         </div>
                     </section>
+
+                    <c:if test="${sessionScope.login.account == b.account || sessionScope.login.auth == 'ADMIN'}">
+                        <!-- sessionScope는 생략 가능. login이 어디에서 왔는지 항상 기억할 것  -->
                     <div class="card-btn-group">
                         <button class="del-btn" data-href="/board/delete?bno=${b.boardNo}">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
+                    </c:if>
                 </div>
             </c:forEach>
 
