@@ -1,7 +1,8 @@
-package com.spring.mvc.chap05.dto;
+package com.spring.mvc.chap05.dto.response;
 
 
 import com.spring.mvc.chap05.dto.page.PageMaker;
+import com.spring.mvc.chap05.dto.response.ReplyDetailResponseDTO;
 import lombok.*;
 import java.util.List;
 

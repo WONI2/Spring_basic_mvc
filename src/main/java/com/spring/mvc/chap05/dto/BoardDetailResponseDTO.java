@@ -1,5 +1,6 @@
 package com.spring.mvc.chap05.dto;
 
+import com.spring.mvc.chap05.dto.response.BoardListResponseDTO;
 import com.spring.mvc.chap05.entity.Board;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
