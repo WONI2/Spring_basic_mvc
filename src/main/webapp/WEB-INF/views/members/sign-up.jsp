@@ -13,6 +13,29 @@
         margin-top: 200px;
         margin-bottom: 200px;
     }
+    .profile {
+        margin-bottom: 70px;
+        text-align: center;
+    }
+    .profile label {
+        font-weight: 700;
+        font-size: 1.2em;
+        cursor: pointer;
+        color: rgb(140, 217, 248);
+    }
+    .profile .thumbnail-box {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 30px auto 10px;
+        cursor: pointer;
+    }
+  
+    .profile .thumbnail-box img {
+        width: 200px;
+        height: 200px;
+    }
 
 
 </style>
@@ -33,8 +56,22 @@
 
 
                         <form action="/members/sign-up" name="signup" id="signUpForm" method="post"
-                            style="margin-bottom: 0;">
+                            style="margin-bottom: 0;" enctype="multipart/form-data">
+                            <div class="profile">
+                                <div class="thumbnail-box">
+                                    <img src="/assets/img/image-add.png" alt="프로필 썸네일">
+                                </div>
 
+                                <label>프로필 이미지 추가</label>
+
+                                <input 
+                                    type="file"
+                                    id="profile-img" 
+                                    accept="image/*"
+                                    style="display: none;"
+                                    name="profileImage"
+                                >
+                            </div>
 
                             <table style="cellpadding: 0; cellspacing: 0; margin: 0 auto; width: 100%">
                                 <tr>
@@ -331,6 +368,34 @@
 
         };
 
+
+        // 프로필 사진 관련 스크립트
+
+     const $profile =   document.querySelector('.profile');
+     const $input =   document.getElementById('profile-img');
+     $profile.onclick = e => {
+        $input.click();
+     };
+
+    // 프로필 사진 선택시 썸네일 이벤트
+    $input.onchange = e => {
+        // 첨부한 파일의 데이터를 읽어오기
+        const fileData = $input.files[0];
+        console.log(fileData);
+
+        // 첨부파일의 바이트데이터를 읽어들이는 객체 생성
+        const reader = new FileReader();
+
+        // 파일의 바이트 데이터를 읽어서 img 태그의 src 속성이나 a태그의 href 속성에 넣기 위한 형태로 
+        reader.readAsDataURL(fileData);
+
+        // 첨부파일이 등록되는 순간 img 태드에 이미지 세팅
+        reader.onloadend = e => {
+            const $imgTag = document.querySelector('.thumbnail-box img');
+            $imgTag.setAttribute('src', reader.result); 
+        }
+
+    };
 
 
     </script>

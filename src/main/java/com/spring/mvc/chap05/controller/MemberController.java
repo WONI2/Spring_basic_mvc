@@ -5,8 +5,10 @@ import com.spring.mvc.chap05.dto.request.SignUpRequestDTO;
 import com.spring.mvc.chap05.service.LoginResult;
 import com.spring.mvc.chap05.service.MemberService;
 import com.spring.mvc.util.LoginUtil;
+import com.spring.mvc.util.upload.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,10 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
+    @Value("${file.upload.rootpath}")
+    private String rootpath;
     private final MemberService memberService;
+
 
     //회원가입 요청
 
@@ -39,8 +44,14 @@ public class MemberController {
     @PostMapping("/sign-up")
     public String signUp(SignUpRequestDTO dto) {
         log.info("/members/sign-up POST - {}", dto);
-        boolean flag = memberService.join(dto);
-        return "redirect:/board/list";
+        log.info("프로필 사진 이름 : {}", dto.getProfileImage().getOriginalFilename());
+
+//        실제 로컬 스토리지에 파일을 업로드 하는 로직.
+        String savePath = FileUtil.uploadFile(dto.getProfileImage(), rootpath);
+
+        boolean flag = memberService.join(dto, savePath);
+//         return "redirect:/board/list";
+        return "redirect:/members/sign-in";
 
     }
 

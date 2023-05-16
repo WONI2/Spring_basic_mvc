@@ -29,13 +29,14 @@ public class MemberService {
     private final PasswordEncoder encoder;
 
 //    회원가입 처리 서비스
-    public boolean join(final SignUpRequestDTO dto) {
+    public boolean join(final SignUpRequestDTO dto, final String savePath) {
 //        dto를 entity로 변환
         Member member = Member.builder()
                 .account(dto.getAccount())
                 .name(dto.getName())
                 .password(encoder.encode(dto.getPassword()))
                 .email(dto.getEmail())
+                .profileImg(savePath)
                 .build();
 
 //        mapper에게 회원 정보 전달해서 저장 명령 내리기
@@ -111,6 +112,7 @@ public class MemberService {
                 .nickName(member.getName())
                 .email(member.getEmail())
                 .auth(member.getAuth().toString()) // auth는 enum 이니까
+                .profile(member.getProfileImg())
                 .build();
 
 //       정보를 세션에 저장

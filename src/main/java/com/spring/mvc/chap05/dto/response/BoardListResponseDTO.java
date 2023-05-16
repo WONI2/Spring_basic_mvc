@@ -30,7 +30,7 @@ public class BoardListResponseDTO {
         this.account = board.getAccount();
     }
 
-    static String makePrettierDateString(LocalDateTime regDateTime) {
+    public static String makePrettierDateString(LocalDateTime regDateTime) {
         DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return pattern.format(regDateTime);
     }

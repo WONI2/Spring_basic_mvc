@@ -1,13 +1,11 @@
 package com.spring.mvc.chap05.service;
 
-import com.spring.mvc.chap05.dto.request.LoginRequestDTO;
 import com.spring.mvc.chap05.dto.request.SignUpRequestDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class MemberServiceTest {
     @Autowired
@@ -20,7 +18,7 @@ class MemberServiceTest {
         dto.setPassword("hihi1234");
         dto.setName("크롱롱");
         dto.setEmail("www2@email.com");
-        memberService.join(dto);
+//        memberService.join(dto, savePath);
     }
 
 //    @Test

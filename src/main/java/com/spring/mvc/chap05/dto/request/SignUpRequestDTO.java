@@ -1,6 +1,7 @@
 package com.spring.mvc.chap05.dto.request;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -26,6 +27,7 @@ public class SignUpRequestDTO {
     @Email
     private String email;
 
+    private MultipartFile profileImage;
 
 
 }

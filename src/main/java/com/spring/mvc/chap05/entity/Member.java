@@ -16,4 +16,7 @@ public class Member {
 
     private LocalDateTime limitTime;
 
+    private String profileImg; //DB에 profile 이미지 경로를 저장.
+
+
 }
