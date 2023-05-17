@@ -68,7 +68,7 @@ public class FileUtil {
         for (String s : dateInfo) {
             directoryPath += "/" + s;
             File f = new File(directoryPath); //"D:/ABC/DEF" 를 만들도록 하는 경로
-            if(!f.exists()) f.mkdir();
+            if(!f.exists()) f.mkdirs();
         }
 
 //

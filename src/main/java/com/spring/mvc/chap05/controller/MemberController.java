@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,19 +42,39 @@ public class MemberController {
     }
 
     //    회원가입 처리 요청
+//    @PostMapping("/sign-up")
+//    public String signUp(SignUpRequestDTO dto) {
+//        log.info("/members/sign-up POST - {}", dto);
+//        log.info("프로필 사진 이름 : {}", dto.getProfileImage().getOriginalFilename());
+//
+////        실제 로컬 스토리지에 파일을 업로드 하는 로직.
+//        String savePath = FileUtil.uploadFile(dto.getProfileImage(), rootpath);
+//
+//        boolean flag = memberService.join(dto, savePath);
+////         return "redirect:/board/list";
+//        return "redirect:/members/sign-in";
+//
+//    }
+    // 회원가입 처리 요청
     @PostMapping("/sign-up")
     public String signUp(SignUpRequestDTO dto) {
-        log.info("/members/sign-up POST - {}", dto);
-        log.info("프로필 사진 이름 : {}", dto.getProfileImage().getOriginalFilename());
+        log.info("/members/sign-up POST ! - {}", dto);
 
-//        실제 로컬 스토리지에 파일을 업로드 하는 로직.
-        String savePath = FileUtil.uploadFile(dto.getProfileImage(), rootpath);
+        MultipartFile profileImage = dto.getProfileImage();
+        log.info("프로필사진 이름: {}", profileImage.getOriginalFilename());
+
+        String savePath = null;
+        if (!profileImage.isEmpty()) { //첨부파일이 있을때만 사진을 저장. db에도 null로 저장됨.
+            // 실제 로컬 스토리지에 파일을 업로드하는 로직
+            savePath = FileUtil.uploadFile(profileImage, rootpath);
+        }
 
         boolean flag = memberService.join(dto, savePath);
-//         return "redirect:/board/list";
-        return "redirect:/members/sign-in";
 
+        return "redirect:/members/sign-in";
     }
+
+
 
     //아이디, 이메일 중복 검사
 // 비동기 요청 처리

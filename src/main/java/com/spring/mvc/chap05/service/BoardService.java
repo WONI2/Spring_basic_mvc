@@ -37,9 +37,10 @@ public class BoardService {
     public boolean register(BoardWriteRequestDTO dto, HttpSession session) {
 //        컨트롤러에서 세션을 받아오기.
         Board board = new Board(dto);
-        board.setAccount(LoginUtil.getCurrentLoginMemberAccount(session)); //account를 받아와야 함. dto엔 없으니 따로 받아올것
+        board.setAccount(LoginUtil.getCurrentLoginMemberAccount(session));
+        //account를 받아와야 함. dto엔 없으니 따로 받아올것
 
-        return boardRepository.save(new Board(dto));
+        return boardRepository.save(board);
     }
 
     public boolean delete(int bno) {

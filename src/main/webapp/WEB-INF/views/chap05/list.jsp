@@ -69,7 +69,7 @@
                         </div>
                     </section>
 
-                    <c:if test="${sessionScope.login.account == b.account || sessionScope.login.auth == 'ADMIN'}">
+                    <c:if test="${login.account == b.account || login.auth == 'ADMIN'}">
                         <!-- sessionScope는 생략 가능. login이 어디에서 왔는지 항상 기억할 것  -->
                     <div class="card-btn-group">
                         <button class="del-btn" data-href="/board/delete?bno=${b.boardNo}">

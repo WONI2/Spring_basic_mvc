@@ -5,9 +5,9 @@
 <mapper namespace="com.spring.mvc.chap05.repository.ReplyMapper">
     <insert id="save">
         INSERT INTO tbl_reply
-            (reply_text, reply_writer, board_no)
+            (reply_text, reply_writer, board_no, account)
         VALUES
-            (#{replyText}, #{replyWriter}, #{boardNo})
+            (#{replyText}, #{replyWriter}, #{boardNo}, #{account})
     </insert>
     <update id="modify">
         UPDATE tbl_reply
@@ -26,9 +26,13 @@
     </select>
 
     <select id="findAll" resultType="reply">
-        SELECT reply_no, reply_text, reply_writer, reply_date, board_no
-        FROM tbl_reply
+        SELECT A.reply_no, A.reply_text, A.reply_writer,
+                A.reply_date, A.board_no, A.account, B.profile_img AS profileImg
+        FROM tbl_reply A
+        JOIN tbl_member B
+        ON A.account = B.account
         WHERE board_no = #{bn}
+
         ORDER BY reply_no
         LIMIT #{p.pageStart}, #{p.amount}
 <!--      ReplyMapper에서 param으로 별칭을 따로 정했기 때문-->

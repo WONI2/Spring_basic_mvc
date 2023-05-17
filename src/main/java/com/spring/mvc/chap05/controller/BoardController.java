@@ -52,12 +52,12 @@ public class BoardController {
 
         log.info("/board/list : GET");
        log.info("page: {}", page);
-        List<BoardListResponseDTO> responseDTOS
+        List<BoardListResponseDTO> responseDTO
                 = boardService.getList(page);
 //        페이지 알고리즘 작동
 
         PageMaker maker = new PageMaker(page, boardService.getCount(page));
-        model.addAttribute("bList", responseDTOS);
+        model.addAttribute("bList", responseDTO);
         model.addAttribute("maker", maker);
         model.addAttribute("s",page);
 

@@ -16,6 +16,7 @@ public class BoardDetailResponseDTO {
     private final String content;
     private final String date;
     private final String writer;
+    private final String account;
 
 
     public BoardDetailResponseDTO(Board board) {
@@ -24,5 +25,6 @@ public class BoardDetailResponseDTO {
         this.content = board.getContent();
         this.date = BoardListResponseDTO.makePrettierDateString(board.getRegDateTime());
         this.writer = board.getWriter();
+        this.account = board.getAccount();
     }
 }

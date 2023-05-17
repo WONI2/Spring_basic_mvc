@@ -389,7 +389,7 @@
         // 파일의 바이트 데이터를 읽어서 img 태그의 src 속성이나 a태그의 href 속성에 넣기 위한 형태로 
         reader.readAsDataURL(fileData);
 
-        // 첨부파일이 등록되는 순간 img 태드에 이미지 세팅
+        // 첨부파일이 등록되는 순간 img 태그에 이미지 세팅
         reader.onloadend = e => {
             const $imgTag = document.querySelector('.thumbnail-box img');
             $imgTag.setAttribute('src', reader.result); 
