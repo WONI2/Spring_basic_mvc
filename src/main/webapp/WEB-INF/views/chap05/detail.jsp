@@ -399,7 +399,8 @@
 
         // 댓글 목록 불러오기 함수
         function getReplyList(page = 1) {
-            fetch(URL + '/' + bno + '/page/' + page) //`` 를 사용하지 않는 이유는 jsp 와 js 의 문법이 구분이 안되기 때문에  
+            fetch(URL + '/' + bno + '/page/' + page) 
+                //``를 사용하지 않는 이유는 jsp 와 js 의 문법이 구분이 안되기 때문에  
                 // ``을 사용하려면 fetch(`\${URL}/\${bno}/page/\${page}`) 로 사용
                 .then(res => res.json())
                 .then(responseResult => {

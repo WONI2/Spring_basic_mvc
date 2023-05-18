@@ -13,6 +13,9 @@ import javax.validation.constraints.Size;
 @Getter @ToString
 @EqualsAndHashCode
 
+//5.18 추가함
+@AllArgsConstructor
+@Builder
 
 public class SignUpRequestDTO {
     @NotBlank
