@@ -18,5 +18,5 @@ public class Member {
 
     private String profileImg; //DB에 profile 이미지 경로를 저장.
 
-
+    private LoginMethod loginMethod;
 }

@@ -2,6 +2,7 @@ package com.spring.mvc.chap05.service;
 
 import com.spring.mvc.chap05.dto.request.SignUpRequestDTO;
 import com.spring.mvc.chap05.dto.sns.KakaoUserDTO;
+import com.spring.mvc.chap05.entity.LoginMethod;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Service
@@ -21,27 +23,37 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SnsLoginService {
 
-//우리 사이트 회원가입할 때 필요한 정보 불러오기
+    //우리 사이트 회원가입할 때 필요한 정보 불러오기
     private final MemberService memberService;
 
-//    카카오 로그인 처리
-    public void kakaoService(Map<String,String> requestMap) {
+    //    카카오 로그인 처리
+    public void kakaoService(Map<String, String> requestMap, HttpSession session) {
 //        인가코드를 통해 토큰 발급 받기
         String accessToken = getKakaoAccessToken(requestMap);
         log.info("accessToken : {} ", accessToken);
 //       토큰을 통해 사용자 정보 가져오기
         KakaoUserDTO dto = getKakaoUserInfo(accessToken);
 
-//        사용자 정보를 통해 우리 서비스 회원가입 진행
-        memberService.join(
-                SignUpRequestDTO.builder()
-                        .account(dto.getKakaoAccount().getEmail())
-                        .email(dto.getKakaoAccount().getEmail())
-                        .name(dto.getKakaoAccount().getProfile().getNickname())
-                        .password("9999")
-                        .build(),
-                dto.getKakaoAccount().getProfile().getProfileImageUrl()
-        );
+//        아이디 이메일 중복확인 검사
+        KakaoUserDTO.KakaoAccount kakaoAccount = dto.getKakaoAccount();
+        if (!memberService.checkSignUpValue("account", kakaoAccount.getEmail())
+                && !memberService.checkSignUpValue("email", kakaoAccount.getEmail())) {
+//            사용자 정보를 통해 우리 서비스 회원가입 진행
+
+            memberService.join(
+                    SignUpRequestDTO.builder()
+                            .account(kakaoAccount.getEmail())
+                            .email(kakaoAccount.getEmail())
+                            .name(kakaoAccount.getProfile().getNickname())
+                            .password("9999")
+                            .LoginMethod(LoginMethod.SNS)
+                            .build(),
+                    kakaoAccount.getProfile().getProfileImageUrl()
+            );
+        }
+//         우리 서비스에서의 로그인 처리
+        memberService.maintainLoginState(session, kakaoAccount.getEmail());
+
 
     }
 
@@ -50,7 +62,7 @@ public class SnsLoginService {
 
 //        요청헤더 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization","Bearer "+accessToken);
+        headers.add("Authorization", "Bearer " + accessToken);
 
 //        요청 보내기
         RestTemplate template = new RestTemplate();
@@ -70,7 +82,7 @@ public class SnsLoginService {
         return responseData;
     }
 
-    private String getKakaoAccessToken(Map<String,String> requestMap) {
+    private String getKakaoAccessToken(Map<String, String> requestMap) {
 
 
         //    요청 uri
@@ -78,13 +90,13 @@ public class SnsLoginService {
 
         //    요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 //요청 파라미터 설정
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type","authorization_code");
-        params.add("client_id",requestMap.get("appkey"));
-        params.add("redirect_uri",requestMap.get("redirect"));
-        params.add("code",requestMap.get("code"));
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", requestMap.get("appkey"));
+        params.add("redirect_uri", requestMap.get("redirect"));
+        params.add("code", requestMap.get("code"));
 
 
 //        카카오 서버로 post통신

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 public class KakaoUserDTO {
 
+//필요한 항목만 DTO를 만들어서 정보를 받아 옴
     private long id;
     @JsonProperty("connected_at")
     private LocalDateTime connectedAt;

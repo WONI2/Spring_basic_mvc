@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class SnsLoginController {
 
 //    인가코드를 받아 토큰 요청
     @GetMapping("/sns/kakao")
-    public String snsKakao(String code) {
+    public String snsKakao(String code, HttpSession session) {
         log.info("인가코드: {}", code);
 // 인가코드를 가지고 카카오서버에 post 요청을 보내야 함. (서버에서 서버로 통신을 하는 방법으로)
         Map<String, String> map = new HashMap<>();
@@ -47,9 +48,9 @@ public class SnsLoginController {
         map.put("redirect", kakaoRedirectUri);
         map.put("code", code);
 
-        loginService.kakaoService(map);
+        loginService.kakaoService(map, session);
 
-        return "";
+        return "redirect:/";
     }
 
 }

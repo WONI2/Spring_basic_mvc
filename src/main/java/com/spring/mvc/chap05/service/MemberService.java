@@ -5,6 +5,7 @@ import com.spring.mvc.chap05.dto.AutoLoginDTO;
 import com.spring.mvc.chap05.dto.request.LoginRequestDTO;
 import com.spring.mvc.chap05.dto.response.LoginUserResponseDTO;
 import com.spring.mvc.chap05.dto.request.SignUpRequestDTO;
+import com.spring.mvc.chap05.entity.LoginMethod;
 import com.spring.mvc.chap05.entity.Member;
 import com.spring.mvc.chap05.repository.MemberMapper;
 import com.spring.mvc.util.LoginUtil;
@@ -37,6 +38,7 @@ public class MemberService {
                 .password(encoder.encode(dto.getPassword()))
                 .email(dto.getEmail())
                 .profileImg(savePath)
+                .loginMethod(LoginMethod.COMMON)
                 .build();
 
 //        mapper에게 회원 정보 전달해서 저장 명령 내리기
